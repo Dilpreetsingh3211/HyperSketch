@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>P2P Whiteboard</title>
+    <link rel="stylesheet" href="./style.css">
+  </head>
+  <body>
+    <div id="titlebar">
+        <pear-ctrl></pear-ctrl>
+    </div>
+  
+    <div id="setup-container">
+      <div id="setup">
+        <h2>Join or Create a Whiteboard Room</h2>
+        <button id="create-drawing-room">Create Room</button>
+        <div id="or">- or -</div>
+        <form id="join-form">
+          <input
+            required
+            id="join-drawing-room-topic"
+            type="text"
+            placeholder="Enter Room ID"
+          />
+          <button type="submit" id="join-drawing-room">Join Room</button>
+        </form>
+      </div>
+    </div>
+
+   
+    <div id="loading" class="hidden">Loading...</div>
+
+ 
+    
+
+    
+    <div id="board-container" class="hidden">
+
+      
+
+
+      <canvas id="myCanvas"></canvas>
+
+     
+      <div id="toolBox">
+        <h3>Tools</h3>
+        <label for="selectTool">Select Tool:</label>
+        <select id="selectTool">
+          <option value="path" selected>Path</option>
+          <option value="rect">Rectangle</option>
+        </select>
+        <br />
+
+        <label for="fillColor">Fill Color:</label>
+        <input
+          type="color"
+          id="fillColor"
+          name="fillColor"
+          value="#ff0000"
+          title="Fill Color"
+        />
+        <input type="checkbox" id="fill"  title="Fill Enabled" />
+        <br />
+
+        <label for="strokeColor">Stroke Color:</label>
+        <input
+          type="color"
+          id="strokeColor"
+          name="strokeColor"
+          value="#422342"
+          title="Stroke Color"
+        />
+        <input type="checkbox" id="stroke" checked title="Stroke Enabled" />
+        <br />
+
+        <label for="strokeWidth">Stroke Width:</label>
+        <input type="range" id="strokeWidth" value="5" min="1" max="100" />
+      </div>
+      <div id="info-container">
+          <div>Topic: <span id="chat-room-topic"></span></div>
+          <div>Peers: <span id="peers-count">0</span></div>
+      </div>
+    </div>
+    <script type="module" src="./util.js"></script>
+    <script type="module" src="./shapes/shape.js"></script>
+    <script type="module" src="./shapes/path.js"></script>
+    <script type="module" src="./shapes/rect.js"></script>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>

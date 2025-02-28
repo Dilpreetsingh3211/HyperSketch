@@ -1,0 +1,222 @@
+/* General Styles */
+:root {
+    --primary-color: #4a90e2; /* Primary color for the theme */
+    --primary-color: #4a90e2; /* Primary color */
+    --primary-color-dark: #357abd; /* Darker shade */
+    --secondary-color: #007bff; /* Secondary color for accents */
+    --background-light: #f8f9fa; /* Light background color */
+    --background-white: #ffffff; /* White background */
+    --shadow-light: 0px 2px 4px rgba(0, 0, 0, 0.2); /* Light shadow */
+    --shadow-medium: 0px 4px 8px rgba(0, 0, 0, 0.3); /* Medium shadow */
+    --shadow-dark: 0px 4px 6px rgba(0, 0, 0, 0.2); /* Dark shadow */
+    --text-dark: #333; /* Dark text color */
+    --text-light: #ffffff; /* Light text color */
+    --border-radius: 8px; /* Default border radius */
+    --font-family: 'Arial', sans-serif; /* Default font family */
+  }
+  
+  body {
+    margin: 0;
+    overflow: hidden;
+    box-sizing: border-box;
+    font-family: var(--font-family);
+    background-color: var(--background-light);
+  }
+  
+  /* Titlebar Styling */
+  #titlebar {
+    -webkit-app-region: drag;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    height: 40px;
+    background: var(--primary-color);
+    color: var(--text-light);
+    padding: 0 15px;
+    box-shadow: var(--shadow-light);
+  }
+  
+  /* Setup Container */
+  #setup-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: var(--background-light);
+  }
+  
+  #setup {
+    background: var(--background-white);
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-medium);
+    text-align: center;
+    max-width: 400px;
+    width: 100%;
+  }
+  
+  #setup h2 {
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+    color: var(--text-dark);
+  }
+  
+  /* Buttons */
+  #create-drawing-room,
+  #join-drawing-room {
+    background-color: var(--primary-color);
+    color: var(--text-light);
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+    #create-drawing-room:hover,
+    #join-drawing-room:hover {
+        background-color: var(--primary-color-dark); /* Darker shade */
+        transform: scale(1.05); /* Slightly scale up the button */
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Add a subtle shadow */
+    }
+  
+    #create-drawing-room {
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+  
+    /* Divider */
+    #or {
+        margin: 1rem 0;
+        color: var(--text-dark);
+        font-size: 0.9rem;
+    }
+  
+    /* Join Form */
+    #join-form {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+  
+    #join-drawing-room-topic {
+        padding: 0.75rem;
+        border: 1px solid #ccc;
+        border-radius: var(--border-radius);
+        font-size: 1rem;
+        outline: none;
+        transition: border-color 0.3s ease;
+    }
+    
+    #join-drawing-room-topic:focus {
+        border-color: var(--primary-color);
+    }
+    
+    #join-drawing-room {
+        width: 100%;
+    }
+  
+ 
+
+ 
+    /* Board Container */
+    #board-container {
+        display: none;
+        position: relative;
+        width: 100vw;
+        height: 100vh;
+        background: var(--background-white);
+    }
+    
+    /* Toolbar (Centered Below Title Bar) */
+    #toolBox {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(255, 255, 255, 0.95);
+        padding: 10px 15px;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow-medium);
+        display: flex;
+        gap: 10px;
+        z-index: 10; /* Ensure it stays above other elements */
+    }
+    
+    /* Info Container (Below Canvas) */
+    #info-container {
+        position: absolute;
+        bottom: 35px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(255, 255, 255, 0.9);
+        padding: 8px 15px;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow-dark);
+        text-align: center;
+        font-size: 14px;
+        color: var(--text-dark);
+        display: flex;
+        gap: 15px;
+        z-index: 10; /* Ensure it stays above other elements */
+    }
+    
+    /* Styling for Topic and Peers Count */
+    #info-container span {
+        font-weight: bold;
+        color: var(--secondary-color);
+    }
+    
+    /* Canvas */
+    canvas {
+        width: 100%;
+        height: 100%;
+        background-color: var(--background-white);
+        display: block;
+    }
+    
+    /* Visibility Utility Classes */
+    .hidden {
+        display: none !important;
+    }
+    
+    .visible {
+        display: flex !important;
+    }
+    
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+        #toolBox {
+        flex-wrap: wrap; /* Allow toolbar items to wrap on smaller screens */
+        justify-content: center;
+        padding: 8px 10px;
+        }
+    
+        #info-container {
+        font-size: 12px; /* Smaller font size for smaller screens */
+        padding: 6px 10px;
+        gap: 10px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        #setup {
+        padding: 1.5rem;
+        }
+    
+        #setup h2 {
+        font-size: 1.25rem;
+        }
+    
+        #create-drawing-room,
+        #join-drawing-room {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+        }
+    
+        #join-drawing-room-topic {
+        padding: 0.5rem;
+        font-size: 0.9rem;
+        }
+    }

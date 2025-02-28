@@ -1,0 +1,28 @@
+{
+  "name": "hypersketch",
+  "main": "index.html",
+  "pear": {
+    "name": "hypersketch",
+    "type": "desktop",
+    "gui": {
+      "backgroundColor": "white",
+      "height": "768",
+      "width": "1024"
+    }
+  },
+  "type": "module",
+  "license": "Apache-2.0",
+  "scripts": {
+    "dev": "pear run -d .",
+    "test": "brittle test/*.test.js"
+  },
+  "devDependencies": {
+    "brittle": "^3.0.0",
+    "pear-interface": "^1.0.0"
+  },
+  "dependencies": {
+    "b4a": "^1.6.7",
+    "hypercore-crypto": "^3.5.0",
+    "hyperswarm": "^4.8.4"
+  }
+}
