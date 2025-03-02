@@ -113,7 +113,7 @@ swarm.on("connection", (peer) => {
         (shape) => shape.id === parsed.data.id
       );
       if (existingShapeIndex !== -1) {
-        shapes.forEach((s) => (s.selected = false)); // Deselect all
+        shapes.forEach((s) => (s.selected = false)); 
         shapes[existingShapeIndex].selected = true;
         redrawCanvas();
       }
@@ -133,7 +133,6 @@ swarm.on("update", () => {
 
 async function createDrawingRoom() {
   const topicBuffer = crypto.randomBytes(32);
-  console.log("enter create chat room");
   joinSwarm(topicBuffer);
 }
 async function joinDrawingRoom(e) {
@@ -426,12 +425,8 @@ strokeWidthInput.addEventListener("input", (e) =>
   changeStrokeWidth(e.target.value)
 );
 
-document
-  .querySelector("#create-drawing-room")
-  .addEventListener("click", createDrawingRoom);
-document
-  .querySelector("#join-form")
-  .addEventListener("submit", joinDrawingRoom);
+document.querySelector("#create-drawing-room").addEventListener("click", createDrawingRoom);
+document.querySelector("#join-form").addEventListener("submit", joinDrawingRoom);
 mycanvas.addEventListener("pointerdown", downCallbackForPath);
 document.getElementById("selectTool").addEventListener("change", changeTool);
 window.addEventListener("resize", updateCanvasSize);
