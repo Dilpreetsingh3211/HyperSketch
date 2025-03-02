@@ -118,6 +118,10 @@ swarm.on("connection", (peer) => {
         redrawCanvas();
       }
     }
+    else if (parsed.type === "delete-shape") {
+      shapes = shapes.filter((s) => s.id !== parsed.data.id);
+      redrawCanvas();
+    }
   });
 
   peer.on("error", (e) => console.log(`Connection error: ${e}`));
@@ -280,7 +284,6 @@ const downCallbackForSelect = (e) => {
     };
 
     const upCallback = (e) => {
-      console.log("select deselect");
       mycanvas.removeEventListener("pointermove", moveCallback);
       mycanvas.removeEventListener("pointerup", upCallback);
     };
@@ -335,7 +338,7 @@ function broadcast(type, data, excludePeer = null) {
   const message = JSON.stringify({ type, data });
 
   for (const peer of swarm.connections) {
-    if (excludePeer && peer === excludePeer) continue; // Skip excluded peer
+    if (excludePeer && peer === excludePeer) continue; 
     peer.write(message);
   }
 }
@@ -386,6 +389,20 @@ function changeStrokeWidth(value) {
     .forEach((s) => (s.options.strokeWidth = Number(value)));
   drawShapes(shapes);
 }
+
+window.addEventListener("keydown", (e) => {
+  if (e.key === "Delete") {
+    const selectedIndex = shapes.findIndex((s) => s.selected);
+    if (selectedIndex !== -1) {
+      const deletedShape = shapes[selectedIndex];
+
+      shapes.splice(selectedIndex, 1);
+      drawShapes(shapes);
+
+      broadcast("delete-shape", { id: deletedShape.id });
+    }
+  }
+});
 
 const fillColorInput = document.getElementById("fillColor");
 const fillCheckbox = document.getElementById("fill");
