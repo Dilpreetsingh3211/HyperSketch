@@ -1,6 +1,7 @@
 /** @typedef {import('pear-interface')} */ /* global Pear */
 import { Rect } from "./shapes/rect";
 import { Path } from "./shapes/path";
+import { Circle } from "./shapes/Circle";
 import {
   averagePoints,
   getMidPoint,
@@ -57,6 +58,8 @@ function createShapeFromData(data) {
       return Path.fromJSON(data);
     case "Rect":
       return Rect.fromJSON(data);
+    case "circle":
+      return Circle.fromJSON(data);
     default:
       return null;
   }
@@ -291,10 +294,37 @@ const downCallbackForSelect = (e) => {
   }
 };
 
+const downCallbackForCircle = (e) => {
+  const mousePosition = { x: e.offsetX, y: e.offsetY };
+  currentShape = new Circle(mousePosition,0, getOptions());
+  broadcastDrawing(currentShape);
+  console.log(shapes);
+  const moveCallback = (e) => {
+    currentShape.setRadius({ x: e.offsetX, y: e.offsetY });
+    console.log(shapes);
+    broadcastDrawing(currentShape);
+    clearCanvas();
+    drawShapes([...shapes, currentShape]);
+  };
+
+  const upCallback = () => {
+    mycanvas.removeEventListener("pointermove", moveCallback);
+    mycanvas.removeEventListener("pointerup", upCallback);
+    // currentShape.recenter();
+    console.log(shapes);
+    shapes.push(currentShape);
+    broadcastShape(currentShape);
+  };
+
+  mycanvas.addEventListener("pointermove", moveCallback);
+  mycanvas.addEventListener("pointerup", upCallback);
+};
+
 function changeTool(e) {
   mycanvas.removeEventListener("pointerdown", downCallbackForRect);
   mycanvas.removeEventListener("pointerdown", downCallbackForPath);
   mycanvas.removeEventListener("pointerdown", downCallbackForSelect);
+  mycanvas.removeEventListener("pointerdown", downCallbackForCircle);
   switch (e.target.value) {
     case "rect":
       mycanvas.addEventListener("pointerdown", downCallbackForRect);
@@ -304,6 +334,9 @@ function changeTool(e) {
       break;
     case "select":
       mycanvas.addEventListener("pointerdown", downCallbackForSelect);
+      break;
+    case "circle":
+      mycanvas.addEventListener("pointerdown", downCallbackForCircle);
       break;
   }
 }
