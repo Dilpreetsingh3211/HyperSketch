@@ -25,17 +25,24 @@
   }
   
   /* Titlebar Styling */
-  #titlebar {
-    -webkit-app-region: drag;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    height: 40px;
-    background: var(--primary-color);
-    color: var(--text-light);
-    padding: 0 15px;
-    box-shadow: var(--shadow-light);
-  }
+/* Titlebar Styling */
+#titlebar {
+  -webkit-app-region: drag;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  height: 40px;
+  background: var(--primary-color);
+  color: var(--text-light);
+  padding: 0 15px;
+  box-shadow: var(--shadow-light);
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
   
   /* Setup Container */
   #setup-container {
@@ -62,185 +69,765 @@
     color: var(--text-dark);
   }
   
-  /* Buttons */
-  #create-drawing-room,
-  #join-drawing-room {
-    background-color: var(--primary-color);
-    color: var(--text-light);
-    border: none;
-    padding: 0.75rem 1.5rem;
-    border-radius: var(--border-radius);
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+  /* Custom Variables */
+:root {
+  --primary-color: #4f46e5; /* Indigo */
+  --primary-color-dark: #4338ca;
+  --primary-color-rgb: 79, 70, 229;
+  --accent-color: #8b5cf6; /* Purple accent */
+  --text-light: #ffffff;
+  --text-dark: #1f2937;
+  --text-muted: #6b7280;
+  --border-radius: 12px;
+  --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 10px 15px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 20px 25px rgba(0, 0, 0, 0.15);
+  --background-light: #f9fafb;
+  --surface: #ffffff;
 }
 
-    #create-drawing-room:hover,
-    #join-drawing-room:hover {
-        background-color: var(--primary-color-dark); /* Darker shade */
-        transform: scale(1.05); /* Slightly scale up the button */
-        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Add a subtle shadow */
-    }
+/* Base Typography */
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--text-dark);
+  background-color: var(--background-light);
+}
+
+/* Buttons */
+#create-drawing-room,
+#join-drawing-room {
+  background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+  color: var(--text-light);
+  border: none;
+  padding: 0.95rem 1.75rem;
+  border-radius: var(--border-radius);
+  font-size: 1.05rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  letter-spacing: 0.5px;
+}
+
+#create-drawing-room::before,
+#join-drawing-room::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.2) 50%,
+      rgba(255, 255, 255, 0) 100%
+  );
+  transition: all 0.6s ease;
+}
+
+#create-drawing-room:hover::before,
+#join-drawing-room:hover::before {
+  left: 100%;
+}
+
+#create-drawing-room:hover,
+#join-drawing-room:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+
+#create-drawing-room:active,
+#join-drawing-room:active {
+  transform: translateY(1px);
+  box-shadow: var(--shadow-sm);
+}
+
+#create-drawing-room {
+  width: 100%;
+  margin-bottom: 1.75rem;
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  font-size: 1.1rem;
+}
+
+/* Divider */
+#or {
+  position: relative;
+  text-align: center;
+  margin: 1.75rem 0;
+  color: var(--text-muted);
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+#or::before,
+#or::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 40%;
+  height: 1px;
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+#or::before {
+  left: 0;
+}
+
+#or::after {
+  right: 0;
+}
+
+/* Join Form */
+#join-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+#join-drawing-room-topic {
+  padding: 0.95rem 1.25rem;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: var(--border-radius);
+  font-size: 1.05rem;
+  outline: none;
+  transition: all 0.3s ease;
+  background-color: var(--surface);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+  color: var(--text-dark);
+}
+
+#join-drawing-room-topic:focus {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px rgba(var(--primary-color-rgb), 0.15);
+  transform: translateY(-1px);
+}
+
+#join-drawing-room-topic::placeholder {
+  color: var(--text-muted);
+  opacity: 0.7;
+}
+
+#join-drawing-room {
+  width: 100%;
+  background: linear-gradient(135deg, #6366f1, #a855f7);
+  font-size: 1.1rem;
+}
+
+/* Add container styling for better appearance */
+.drawing-room-controls {
+  background-color: var(--surface);
+  border-radius: 20px;
+  padding: 2.5rem;
+  box-shadow: var(--shadow-md);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  max-width: 450px;
+  margin: 2rem auto;
+}
+
+.drawing-room-controls:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Section headings if needed */
+.section-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-bottom: 1.5rem;
+  letter-spacing: -0.01em;
+}
+
+.section-subtitle {
+  font-size: 1rem;
+  color: var(--text-muted);
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+
+/* Optional: Add animations on page load */
+@keyframes fadeIn {
+  from {
+      opacity: 0;
+      transform: translateY(20px);
+  }
+  to {
+      opacity: 1;
+      transform: translateY(0);
+  }
+}
+
+#create-drawing-room {
+  animation: fadeIn 0.6s ease forwards;
+}
+
+#or {
+  animation: fadeIn 0.6s 0.2s ease forwards;
+  opacity: 0;
+  animation-fill-mode: forwards;
+}
+
+#join-form {
+  animation: fadeIn 0.6s 0.4s ease forwards;
+  opacity: 0;
+  animation-fill-mode: forwards;
+}
+
+/* Dark mode support (optional) */
+@media (prefers-color-scheme: light) {
+  :root {
+      --text-dark: #f3f4f6;
+      --text-muted: #9ca3af;
+      --background-light: #111827;
+      --surface: #1f2937;
+  }
   
-    #create-drawing-room {
-        width: 100%;
-        margin-bottom: 1rem;
-    }
+  #join-drawing-room-topic {
+      background-color: rgba(255, 255, 255, 0.05);
+      border-color: rgba(255, 255, 255, 0.1);
+      color: var(--text-light);
+  }
   
-    /* Divider */
-    #or {
-        margin: 1rem 0;
-        color: var(--text-dark);
-        font-size: 0.9rem;
-    }
-  
-    /* Join Form */
-    #join-form {
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-    }
-  
-    #join-drawing-room-topic {
-        padding: 0.75rem;
-        border: 1px solid #ccc;
-        border-radius: var(--border-radius);
-        font-size: 1rem;
-        outline: none;
-        transition: border-color 0.3s ease;
-    }
-    
-    #join-drawing-room-topic:focus {
-        border-color: var(--primary-color);
-    }
-    
-    #join-drawing-room {
-        width: 100%;
-    }
+  #or::before,
+  #or::after {
+      background-color: rgba(255, 255, 255, 0.1);
+  }
+}
   
  
 
  
-    /* Board Container */
-    #board-container {
-        display: none;
-        position: relative;
-        width: 100vw;
-        height: 100vh;
-        background: var(--background-white);
-    }
-    
-    /* Toolbar (Centered Below Title Bar) */
+/* Board Container */
+#board-container {
+    display: none;
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    background: var(--background-white);
+}
+
+/* Toolbar (Centered Below Title Bar) */
+#toolBox {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.95);
+    padding: 10px 15px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-medium);
+    display: flex;
+    gap: 10px;
+    z-index: 10; /* Ensure it stays above other elements */
+}
+
+/* Info Container (Below Canvas) */
+#info-container {
+    position: absolute;
+    bottom: 35px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.9);
+    padding: 8px 15px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-dark);
+    text-align: center;
+    font-size: 14px;
+    color: var(--text-dark);
+    display: flex;
+    gap: 15px;
+    z-index: 10; /* Ensure it stays above other elements */
+}
+
+/* Styling for Topic and Peers Count */
+#info-container span {
+    font-weight: bold;
+    color: var(--secondary-color);
+}
+
+/* Canvas */
+#canvas-container {
+    position: relative;          /* Establishes a positioning context */
+    width: 100vw;               /* Fixed width, adjust as needed */
+    height: 100vh;              /* Fixed height, adjust as needed */
+    background: #f0f0f0;        /* Optional: Visible background for debugging */
+  }
+  
+  /* Main canvas (behind) */
+  #mainCanvas {
+    position: absolute;         /* Positioned within the container */
+    top: 0;                     /* Align to top-left */
+    left: 0;
+    width: 100%;               /* Match container width */
+    height: 100%;              /* Match container height */
+    z-index: 1;                /* Lower stacking order */
+  }
+  
+  /* Helper canvas (in front, semi-transparent) */
+  #helperCanvas {
+    position: absolute;         /* Positioned within the container */
+    top: 0;                     /* Align to top-left */
+    left: 0;
+    width: 100%;               /* Match container width */
+    height: 100%;              /* Match container height */
+    z-index: 2;                /* Higher stacking order */
+    opacity: 0.5;   
+        /* Semi-transparent to see main canvas underneath */
+    pointer-events: none;      /* Allows mouse events to pass through to mycanvas */
+  }
+
+/* Visibility Utility Classes */
+.hidden {
+    display: none !important;
+}
+
+.visible {
+    display: flex !important;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
     #toolBox {
-        position: absolute;
-        top: 0;
-        left: 50%;
-        transform: translateX(-50%);
-        background: rgba(255, 255, 255, 0.95);
-        padding: 10px 15px;
-        border-radius: var(--border-radius);
-        box-shadow: var(--shadow-medium);
-        display: flex;
-        gap: 10px;
-        z-index: 10; /* Ensure it stays above other elements */
-    }
-    
-    /* Info Container (Below Canvas) */
-    #info-container {
-        position: absolute;
-        bottom: 35px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: rgba(255, 255, 255, 0.9);
-        padding: 8px 15px;
-        border-radius: var(--border-radius);
-        box-shadow: var(--shadow-dark);
-        text-align: center;
-        font-size: 14px;
-        color: var(--text-dark);
-        display: flex;
-        gap: 15px;
-        z-index: 10; /* Ensure it stays above other elements */
-    }
-    
-    /* Styling for Topic and Peers Count */
-    #info-container span {
-        font-weight: bold;
-        color: var(--secondary-color);
-    }
-    
-    /* Canvas */
-    #canvas-container {
-        position: relative;          /* Establishes a positioning context */
-        width: 100vw;               /* Fixed width, adjust as needed */
-        height: 100vh;              /* Fixed height, adjust as needed */
-        background: #f0f0f0;        /* Optional: Visible background for debugging */
-      }
-      
-      /* Main canvas (behind) */
-      #mainCanvas {
-        position: absolute;         /* Positioned within the container */
-        top: 0;                     /* Align to top-left */
-        left: 0;
-        width: 100%;               /* Match container width */
-        height: 100%;              /* Match container height */
-        z-index: 1;                /* Lower stacking order */
-      }
-      
-      /* Helper canvas (in front, semi-transparent) */
-      #helperCanvas {
-        position: absolute;         /* Positioned within the container */
-        top: 0;                     /* Align to top-left */
-        left: 0;
-        width: 100%;               /* Match container width */
-        height: 100%;              /* Match container height */
-        z-index: 2;                /* Higher stacking order */
-        opacity: 0.5;   
-           /* Semi-transparent to see main canvas underneath */
-        pointer-events: none;      /* Allows mouse events to pass through to mycanvas */
-      }
-    
-    /* Visibility Utility Classes */
-    .hidden {
-        display: none !important;
-    }
-    
-    .visible {
-        display: flex !important;
-    }
-    
-    /* Responsive Adjustments */
-    @media (max-width: 768px) {
-        #toolBox {
-        flex-wrap: wrap; /* Allow toolbar items to wrap on smaller screens */
-        justify-content: center;
-        padding: 8px 10px;
-        }
-    
-        #info-container {
-        font-size: 12px; /* Smaller font size for smaller screens */
-        padding: 6px 10px;
-        gap: 10px;
-        }
+    flex-wrap: wrap; /* Allow toolbar items to wrap on smaller screens */
+    justify-content: center;
+    padding: 8px 10px;
     }
 
-    @media (max-width: 480px) {
-        #setup {
-        padding: 1.5rem;
-        }
-    
-        #setup h2 {
-        font-size: 1.25rem;
-        }
-    
-        #create-drawing-room,
-        #join-drawing-room {
-        padding: 0.5rem 1rem;
-        font-size: 0.9rem;
-        }
-    
-        #join-drawing-room-topic {
-        padding: 0.5rem;
-        font-size: 0.9rem;
-        }
+    #info-container {
+    font-size: 12px; /* Smaller font size for smaller screens */
+    padding: 6px 10px;
+    gap: 10px;
     }
+}
+
+@media (max-width: 480px) {
+    #setup {
+    padding: 1.5rem;
+    }
+
+    #setup h2 {
+    font-size: 1.25rem;
+    }
+
+    #create-drawing-room,
+    #join-drawing-room {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    }
+
+    #join-drawing-room-topic {
+    padding: 0.5rem;
+    font-size: 0.9rem;
+    }
+}
+
+
+/* selectttt toooool */
+
+
+
+/* Light-mode styling */
+body {
+  background-color: #f9f9fb;
+  font-family: 'Arial', sans-serif;
+  color: #333;
+  padding: 20px;
+}
+
+.tool-box {
+  background-color: #fff;
+  border-radius: 15px;
+  padding: 24px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  max-width :max-content;
+  margin: auto;
+  transition: all 0.3s ease;
+}
+
+.tool-box:hover {
+  transform: translateY(-5px);
+  box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.tool-container {
+  margin: 5px;
+}
+
+.tool-select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 16px;
+  background-color: #fefefe;
+  transition: border 0.3s ease;
+  appearance: none;
+  background-position: right 10px center;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  cursor: pointer;
+  margin-left: 15px ;
+  margin-right: 15px ;
+}
+
+.tool-select:hover {
+  border-color: #007bff;
+}
+
+.tool-label {
+  font-size: 14px;
+  font-weight: bold;
+  color: #555;
+}
+
+.tool-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tool-option input[type="color"] {
+  border: none;
+  padding: 0;
+  margin-right: 10px;
+  background-color: transparent;
+}
+
+.tool-checkbox {
+  cursor: pointer;
+  transform: scale(1.3);
+  margin-left: 10px;
+}
+
+.tool-range {
+  width: 100%;
+  margin-top: 5px;
+  accent-color: #007bff;
+}
+
+.tool-range::-webkit-slider-thumb {
+  width: 20px;
+  height: 20px;
+  background-color: #007bff;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.tool-range:hover::-webkit-slider-thumb {
+  background-color: #0056b3;
+}
+
+.tool-range::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  background-color: #007bff;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.tool-range:hover::-moz-range-thumb {
+  background-color: #0056b3;
+}
+
+input[type="checkbox"]:checked {
+  background-color: #007bff;
+  border: none;
+}
+
+/* Add smooth animation */
+.tool-box, .tool-option, .tool-select, .tool-range {
+  transition: all 0.3s ease;
+}
+
+/* Add tool logos if you want custom logos instead of emojis */
+.tool-select option[value="path"]::before {
+  content: url('path-icon.svg'); /* Replace with custom SVG */
+}
+
+.tool-select option[value="rect"]::before {
+  content: url('rect-icon.svg'); /* Replace with custom SVG */
+  padding: 20px;
+}
+
+.tool-select option[value="select"]::before {
+  content: url('select-icon.svg'); /* Replace with custom SVG */
+}
+
+.tool-select option[value="circle"]::before {
+  content: url('circle-icon.svg'); /* Replace with custom SVG */
+}
+
+.tool-select option[value="grab"]::before {
+  content: url('grab-icon.svg'); /* Replace with custom SVG */
+}
+
+.tool-select option[value="line"]::before {
+  content: url('line-icon.svg'); /* Replace with custom SVG */
+}
+
+
+
+/* loaderrrrrrrrrrrrrrrrrrrrrrr */
+
+
+
+
+
+
+/* ...existing code... */
+
+/* Loader Styling */
+#loading {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(249, 249, 251, 0.2);
+  z-index: 1000;
+}
+
+/* From Uiverse.io by alexruix */
+.loader {
+  width: 112px;
+  height: 112px;
+  position: relative;
+}
+
+.box1,
+.box2,
+.box3 {
+  border: 16px solid #7525ff;
+  box-sizing: border-box;
+  position: absolute;
+  display: block;
+}
+
+.box1 {
+  width: 112px;
+  height: 48px;
+  margin-top: 64px;
+  margin-left: 0px;
+  animation: abox1 4s 1s forwards ease-in-out infinite;
+}
+
+.box2 {
+  width: 48px;
+  height: 48px;
+  margin-top: 0px;
+  margin-left: 0px;
+  animation: abox2 4s 1s forwards ease-in-out infinite;
+}
+
+.box3 {
+  width: 48px;
+  height: 48px;
+  margin-top: 0px;
+  margin-left: 64px;
+  animation: abox3 4s 1s forwards ease-in-out infinite;
+}
+
+@keyframes abox1 {
+  0% {
+    width: 112px;
+    height: 48px;
+    margin-top: 64px;
+    margin-left: 0px;
+  }
+
+  12.5% {
+    width: 48px;
+    height: 48px;
+    margin-top: 64px;
+    margin-left: 0px;
+  }
+
+  25% {
+    width: 48px;
+    height: 48px;
+    margin-top: 64px;
+    margin-left: 0px;
+  }
+
+  37.5% {
+    width: 48px;
+    height: 48px;
+    margin-top: 64px;
+    margin-left: 0px;
+  }
+
+  50% {
+    width: 48px;
+    height: 48px;
+    margin-top: 64px;
+    margin-left: 0px;
+  }
+
+  62.5% {
+    width: 48px;
+    height: 48px;
+    margin-top: 64px;
+    margin-left: 0px;
+  }
+
+  75% {
+    width: 48px;
+    height: 112px;
+    margin-top: 0px;
+    margin-left: 0px;
+  }
+
+  87.5% {
+    width: 48px;
+    height: 48px;
+    margin-top: 0px;
+    margin-left: 0px;
+  }
+
+  100% {
+    width: 48px;
+    height: 48px;
+    margin-top: 0px;
+    margin-left: 0px;
+  }
+}
+
+@keyframes abox2 {
+  0% {
+    width: 48px;
+    height: 48px;
+    margin-top: 0px;
+    margin-left: 0px;
+  }
+
+  12.5% {
+    width: 48px;
+    height: 48px;
+    margin-top: 0px;
+    margin-left: 0px;
+  }
+
+  25% {
+    width: 48px;
+    height: 48px;
+    margin-top: 0px;
+    margin-left: 0px;
+  }
+
+  37.5% {
+    width: 48px;
+    height: 48px;
+    margin-top: 0px;
+    margin-left: 0px;
+  }
+
+  50% {
+    width: 112px;
+    height: 48px;
+    margin-top: 0px;
+    margin-left: 0px;
+  }
+
+  62.5% {
+    width: 48px;
+    height: 48px;
+    margin-top: 0px;
+    margin-left: 64px;
+  }
+
+  75% {
+    width: 48px;
+    height: 48px;
+    margin-top: 0px;
+    margin-left: 64px;
+  }
+
+  87.5% {
+    width: 48px;
+    height: 48px;
+    margin-top: 0px;
+    margin-left: 64px;
+  }
+
+  100% {
+    width: 48px;
+    height: 48px;
+    margin-top: 0px;
+    margin-left: 64px;
+  }
+}
+
+@keyframes abox3 {
+  0% {
+    width: 48px;
+    height: 48px;
+    margin-top: 0px;
+    margin-left: 64px;
+  }
+
+  12.5% {
+    width: 48px;
+    height: 48px;
+    margin-top: 0px;
+    margin-left: 64px;
+  }
+
+  25% {
+    width: 48px;
+    height: 112px;
+    margin-top: 0px;
+    margin-left: 64px;
+  }
+
+  37.5% {
+    width: 48px;
+    height: 48px;
+    margin-top: 64px;
+    margin-left: 64px;
+  }
+
+  50% {
+    width: 48px;
+    height: 48px;
+    margin-top: 64px;
+    margin-left: 64px;
+  }
+
+  62.5% {
+    width: 48px;
+    height: 48px;
+    margin-top: 64px;
+    margin-left: 64px;
+  }
+
+  75% {
+    width: 48px;
+    height: 48px;
+    margin-top: 64px;
+    margin-left: 64px;
+  }
+
+  87.5% {
+    width: 48px;
+    height: 48px;
+    margin-top: 64px;
+    margin-left: 64px;
+  }
+
+  100% {
+    width: 112px;
+    height: 48px;
+    margin-top: 64px;
+    margin-left: 0px;
+  }
+}
