@@ -1,30 +1,51 @@
 /* General Styles */
 :root {
-    --primary-color: #4a90e2; /* Primary color for the theme */
-    --primary-color: #4a90e2; /* Primary color */
-    --primary-color-dark: #357abd; /* Darker shade */
-    --secondary-color: #007bff; /* Secondary color for accents */
-    --background-light: #f8f9fa; /* Light background color */
-    --background-white: #ffffff; /* White background */
-    --shadow-light: 0px 2px 4px rgba(0, 0, 0, 0.2); /* Light shadow */
-    --shadow-medium: 0px 4px 8px rgba(0, 0, 0, 0.3); /* Medium shadow */
-    --shadow-dark: 0px 4px 6px rgba(0, 0, 0, 0.2); /* Dark shadow */
-    --text-dark: #333; /* Dark text color */
-    --text-light: #ffffff; /* Light text color */
-    --border-radius: 8px; /* Default border radius */
-    --font-family: 'Arial', sans-serif; /* Default font family */
-  }
-  
-  body {
-    margin: 0;
-    padding:0;
-    overflow: hidden;
-    box-sizing: border-box;
-    font-family: var(--font-family);
-    background-color: var(--background-light);
-  }
-  
-  /* Titlebar Styling */
+  --primary-color: #4a90e2;
+  /* Primary color for the theme */
+  --primary-color: #4a90e2;
+  /* Primary color */
+  --primary-color-dark: #357abd;
+  /* Darker shade */
+  --secondary-color: #007bff;
+  /* Secondary color for accents */
+  --background-light: #f8f9fa;
+  /* Light background color */
+  --background-white: #ffffff;
+  /* White background */
+  --shadow-light: 0px 2px 4px rgba(0, 0, 0, 0.2);
+  /* Light shadow */
+  --shadow-medium: 0px 4px 8px rgba(0, 0, 0, 0.3);
+  /* Medium shadow */
+  --shadow-dark: 0px 4px 6px rgba(0, 0, 0, 0.2);
+  /* Dark shadow */
+  --text-dark: #333;
+  /* Dark text color */
+  --text-light: #ffffff;
+  /* Light text color */
+  --border-radius: 8px;
+  /* Default border radius */
+  --font-family: 'Arial', sans-serif;
+  /* Default font family */
+}
+
+
+
+/* Titlebar Styling */
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--text-dark);
+  background-color: var(--background-light);
+}
+
+/* Titlebar Styling */
 /* Titlebar Styling */
 #titlebar {
   -webkit-app-region: drag;
@@ -34,47 +55,48 @@
   height: 40px;
   background: var(--primary-color);
   color: var(--text-light);
-  padding: 0 15px;
+  padding: 0;
   box-shadow: var(--shadow-light);
   width: 100%;
   box-sizing: border-box;
-  margin: 0;
-  position: fixed;
-  top: 0;
-  left: 0;
+  position: relative;
+  /* Changed from fixed to relative for stacking */
+  /* z-index: 20; */
 }
-  
-  /* Setup Container */
-  #setup-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: var(--background-light);
-  }
-  
-  #setup {
-    background: var(--background-white);
-    padding: 2rem;
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow-medium);
-    text-align: center;
-    max-width: 400px;
-    width: 100%;
-  }
-  
-  #setup h2 {
-    margin-bottom: 1.5rem;
-    font-size: 1.5rem;
-    color: var(--text-dark);
-  }
-  
-  /* Custom Variables */
+
+/* Setup Container */
+#setup-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: var(--background-light);
+}
+
+#setup {
+  background: var(--background-white);
+  padding: 2rem;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-medium);
+  text-align: center;
+  max-width: 400px;
+  width: 100%;
+}
+
+#setup h2 {
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+  color: var(--text-dark);
+}
+
+/* Custom Variables */
 :root {
-  --primary-color: #4f46e5; /* Indigo */
+  --primary-color: #4f46e5;
+  /* Indigo */
   --primary-color-dark: #4338ca;
   --primary-color-rgb: 79, 70, 229;
-  --accent-color: #8b5cf6; /* Purple accent */
+  --accent-color: #8b5cf6;
+  /* Purple accent */
   --text-light: #ffffff;
   --text-dark: #1f2937;
   --text-muted: #6b7280;
@@ -86,14 +108,7 @@
   --surface: #ffffff;
 }
 
-/* Base Typography */
-body {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  font-size: 16px;
-  line-height: 1.5;
-  color: var(--text-dark);
-  background-color: var(--background-light);
-}
+
 
 /* Buttons */
 #create-drawing-room,
@@ -121,12 +136,10 @@ body {
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-      90deg,
+  background: linear-gradient(90deg,
       rgba(255, 255, 255, 0) 0%,
       rgba(255, 255, 255, 0.2) 50%,
-      rgba(255, 255, 255, 0) 100%
-  );
+      rgba(255, 255, 255, 0) 100%);
   transition: all 0.6s ease;
 }
 
@@ -253,12 +266,13 @@ body {
 /* Optional: Add animations on page load */
 @keyframes fadeIn {
   from {
-      opacity: 0;
-      transform: translateY(20px);
+    opacity: 0;
+    transform: translateY(20px);
   }
+
   to {
-      opacity: 1;
-      transform: translateY(0);
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
@@ -281,149 +295,168 @@ body {
 /* Dark mode support (optional) */
 @media (prefers-color-scheme: light) {
   :root {
-      --text-dark: #f3f4f6;
-      --text-muted: #9ca3af;
-      --background-light: #111827;
-      --surface: #1f2937;
+    --text-dark: #f3f4f6;
+    --text-muted: #9ca3af;
+    --background-light: #111827;
+    --surface: #1f2937;
   }
-  
+
   #join-drawing-room-topic {
-      background-color: rgba(255, 255, 255, 0.05);
-      border-color: rgba(255, 255, 255, 0.1);
-      color: var(--text-light);
+    background-color: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: var(--text-light);
   }
-  
+
   #or::before,
   #or::after {
-      background-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(255, 255, 255, 0.1);
   }
 }
-  
- 
 
- 
+
+
+
 /* Board Container */
 #board-container {
-    display: none;
-    position: relative;
-    width: 100vw;
-    height: 100vh;
-    background: var(--background-white);
+  display: none;
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  background: var(--background-white);
 }
 
 /* Toolbar (Centered Below Title Bar) */
 #toolBox {
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(255, 255, 255, 0.95);
-    padding: 10px 15px;
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow-medium);
-    display: flex;
-    gap: 10px;
-    z-index: 10; /* Ensure it stays above other elements */
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255, 255, 255, 0.95);
+  padding: 10px 15px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-medium);
+  display: flex;
+  gap: 10px;
+  z-index: 10;
+  /* Ensure it stays above other elements */
 }
 
 /* Info Container (Below Canvas) */
 #info-container {
-    position: absolute;
-    bottom: 35px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(255, 255, 255, 0.9);
-    padding: 8px 15px;
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow-dark);
-    text-align: center;
-    font-size: 14px;
-    color: var(--text-dark);
-    display: flex;
-    gap: 15px;
-    z-index: 10; /* Ensure it stays above other elements */
+  position: absolute;
+  bottom: 35px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255, 255, 255, 0.9);
+  padding: 8px 15px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-dark);
+  text-align: center;
+  font-size: 14px;
+  color: var(--text-dark);
+  display: flex;
+  gap: 15px;
+  z-index: 10;
+  /* Ensure it stays above other elements */
 }
 
 /* Styling for Topic and Peers Count */
 #info-container span {
-    font-weight: bold;
-    color: var(--secondary-color);
+  font-weight: bold;
+  color: var(--secondary-color);
 }
 
 /* Canvas */
 #canvas-container {
-    position: relative;          /* Establishes a positioning context */
-    width: 100vw;               /* Fixed width, adjust as needed */
-    height: 100vh;              /* Fixed height, adjust as needed */
-    background: #f0f0f0;        /* Optional: Visible background for debugging */
-  }
-  
-  /* Main canvas (behind) */
-  #mainCanvas {
-    position: absolute;         /* Positioned within the container */
-    top: 0;                     /* Align to top-left */
-    left: 0;
-    width: 100%;               /* Match container width */
-    height: 100%;              /* Match container height */
-    z-index: 1;                /* Lower stacking order */
-  }
-  
-  /* Helper canvas (in front, semi-transparent) */
-  #helperCanvas {
-    position: absolute;         /* Positioned within the container */
-    top: 0;                     /* Align to top-left */
-    left: 0;
-    width: 100%;               /* Match container width */
-    height: 100%;              /* Match container height */
-    z-index: 2;                /* Higher stacking order */
-    opacity: 0.5;   
-        /* Semi-transparent to see main canvas underneath */
-    pointer-events: none;      /* Allows mouse events to pass through to mycanvas */
-  }
+  position: relative;
+  /* Establishes a positioning context */
+  width: 100vw;
+  /* Fixed width, adjust as needed */
+  height: 100vh;
+  /* Fixed height, adjust as needed */
+  background: #f0f0f0;
+  /* Optional: Visible background for debugging */
+}
+
+/* Main canvas (behind) */
+#mainCanvas {
+  position: absolute;
+  /* Positioned within the container */
+  top: 0;
+  /* Align to top-left */
+  left: 0;
+  width: 100%;
+  /* Match container width */
+  height: 100%;
+  /* Match container height */
+  z-index: 1;
+  /* Lower stacking order */
+}
+
+/* Helper canvas (in front, semi-transparent) */
+#helperCanvas {
+  position: absolute;
+  /* Positioned within the container */
+  top: 0;
+  /* Align to top-left */
+  left: 0;
+  width: 100%;
+  /* Match container width */
+  height: 100%;
+  /* Match container height */
+  z-index: 2;
+  /* Higher stacking order */
+  opacity: 0.5;
+  /* Semi-transparent to see main canvas underneath */
+  pointer-events: none;
+  /* Allows mouse events to pass through to mycanvas */
+}
 
 /* Visibility Utility Classes */
 .hidden {
-    display: none !important;
+  display: none !important;
 }
 
 .visible {
-    display: flex !important;
+  display: flex !important;
 }
 
 /* Responsive Adjustments */
 @media (max-width: 768px) {
-    #toolBox {
-    flex-wrap: wrap; /* Allow toolbar items to wrap on smaller screens */
+  #toolBox {
+    flex-wrap: wrap;
+    /* Allow toolbar items to wrap on smaller screens */
     justify-content: center;
     padding: 8px 10px;
-    }
+  }
 
-    #info-container {
-    font-size: 12px; /* Smaller font size for smaller screens */
+  #info-container {
+    font-size: 12px;
+    /* Smaller font size for smaller screens */
     padding: 6px 10px;
     gap: 10px;
-    }
+  }
 }
 
 @media (max-width: 480px) {
-    #setup {
+  #setup {
     padding: 1.5rem;
-    }
+  }
 
-    #setup h2 {
+  #setup h2 {
     font-size: 1.25rem;
-    }
+  }
 
-    #create-drawing-room,
-    #join-drawing-room {
+  #create-drawing-room,
+  #join-drawing-room {
     padding: 0.5rem 1rem;
     font-size: 0.9rem;
-    }
+  }
 
-    #join-drawing-room-topic {
+  #join-drawing-room-topic {
     padding: 0.5rem;
     font-size: 0.9rem;
-    }
+  }
 }
 
 
@@ -432,19 +465,14 @@ body {
 
 
 /* Light-mode styling */
-body {
-  background-color: #f9f9fb;
-  font-family: 'Arial', sans-serif;
-  color: #333;
-  padding: 20px;
-}
+
 
 .tool-box {
   background-color: #fff;
   border-radius: 15px;
   padding: 24px;
   box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
-  max-width :max-content;
+  width:75%;
   margin: auto;
   transition: all 0.3s ease;
 }
@@ -471,8 +499,8 @@ body {
   background-repeat: no-repeat;
   background-size: 16px;
   cursor: pointer;
-  margin-left: 15px ;
-  margin-right: 15px ;
+  margin-left: 15px;
+  margin-right: 15px;
 }
 
 .tool-select:hover {
@@ -542,34 +570,53 @@ input[type="checkbox"]:checked {
 }
 
 /* Add smooth animation */
-.tool-box, .tool-option, .tool-select, .tool-range {
+.tool-box,
+.tool-option,
+.tool-select,
+.tool-range {
   transition: all 0.3s ease;
 }
 
-/* Add tool logos if you want custom logos instead of emojis */
-.tool-select option[value="path"]::before {
-  content: url('path-icon.svg'); /* Replace with custom SVG */
+#leave-room {
+  background: linear-gradient(135deg, #ef4444, #b91c1c); /* Red gradient for "leave" action */
+  color: var(--text-light);
+  border: none;
+  border-radius: var(--border-radius);
+  font-size: 1rem; /* Slightly smaller than main buttons */
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  letter-spacing: 0.5px;
+  margin: 0 10px; /* Space it from other elements */
 }
 
-.tool-select option[value="rect"]::before {
-  content: url('rect-icon.svg'); /* Replace with custom SVG */
-  padding: 20px;
+/* Hover effect with shine */
+#leave-room::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0) 100%);
+  transition: all 0.6s ease;
 }
 
-.tool-select option[value="select"]::before {
-  content: url('select-icon.svg'); /* Replace with custom SVG */
+#leave-room:hover::before {
+  left: 100%;
 }
 
-.tool-select option[value="circle"]::before {
-  content: url('circle-icon.svg'); /* Replace with custom SVG */
+#leave-room:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
 }
 
-.tool-select option[value="grab"]::before {
-  content: url('grab-icon.svg'); /* Replace with custom SVG */
-}
-
-.tool-select option[value="line"]::before {
-  content: url('line-icon.svg'); /* Replace with custom SVG */
+#leave-room:active {
+  transform: translateY(1px);
+  box-shadow: var(--shadow-sm);
 }
 
 
@@ -603,7 +650,6 @@ input[type="checkbox"]:checked {
   height: 112px;
   position: relative;
 }
-
 .box1,
 .box2,
 .box3 {

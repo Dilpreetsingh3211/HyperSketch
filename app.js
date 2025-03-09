@@ -7,7 +7,7 @@ import { toTrueX, toTrueY } from "./util";
 import { Rect } from "./shapes/rect";
 import { Path } from "./shapes/path";
 import { Circle } from "./shapes/Circle";
-import {Line} from "./shapes/line"
+import { Line } from "./shapes/line";
 import { state } from "./state";
 import { addPoints, subtractPoints } from "./util";
 import Hyperswarm from "hyperswarm";
@@ -16,8 +16,6 @@ import b4a from "b4a";
 const { teardown, updates } = Pear;
 
 let currentShape;
-let conns = [];
-let myName;
 
 mycanvas.width = state.canvasProperties.width;
 mycanvas.height = state.canvasProperties.height;
@@ -30,8 +28,6 @@ updates(() => Pear.reload());
 
 swarm.on("connection", (peer) => {
   console.log(peer);
-  myName = b4a.toString(peer.remotePublicKey, "hex");
-  conns.push(peer);
   peer.write(JSON.stringify({ type: "init", data: shapes }));
 
   peer.on("data", (message) => {
@@ -107,6 +103,30 @@ async function joinSwarm(topicBuffer) {
   document.querySelector("#board-container").classList.remove("hidden");
   document.querySelector("#board-container").classList.add("visible");
 }
+async function leaveDrawingRoom() {
+  document.querySelector("#board-container").classList.remove("visible");
+  document.querySelector("#board-container").classList.add("hidden");
+  document.querySelector("#loading").classList.remove("hidden");
+
+  const topicBuffer = b4a.from(
+    document.querySelector("#chat-room-topic").innerText,
+    "hex"
+  );
+  swarm.leave(topicBuffer);
+
+  for (const peer of swarm.connections) {
+    peer.end();
+  }
+
+  shapes.length = 0;
+  document.querySelector("#peers-count").textContent = "0";
+  document.querySelector("#chat-room-topic").innerText = "";
+  redrawCanvas();
+
+  await new Promise((resolve) => setTimeout(resolve, 500));
+  document.querySelector("#loading").classList.add("hidden");
+  document.querySelector("#setup-container").classList.remove("hidden");
+}
 
 function createShapeFromData(data) {
   if (!data || !data.type) return null;
@@ -159,9 +179,10 @@ const downCallbackForRect = (e) => {
 const downCallbackForPath = (e) => {
   const mousePosition = { x: toTrueX(e.offsetX), y: toTrueY(e.offsetY) };
 
-  currentShape = (selectTool.value==="path") ? 
-                      new Path(mousePosition, getOptions()) :
-                      new Line(mousePosition,getOptions()) ;
+  currentShape =
+    selectTool.value === "path"
+      ? new Path(mousePosition, getOptions())
+      : new Line(mousePosition, getOptions());
 
   broadcastDrawing(currentShape);
 
@@ -191,13 +212,13 @@ const downCallbackForSelect = (e) => {
 
   const [r, g, b, a] = helperCtx.getImageData(screenX, screenY, 1, 1).data;
   const colorId = (r << 16) | (g << 8) | b;
-  const shape = shapes.find((s) => colorId === s.colorId && s.lock===false);
+  const shape = shapes.find((s) => colorId === s.colorId && s.lock === false);
 
   shapes.forEach((s) => (s.selected = false));
 
   if (shape) {
     shape.selected = true;
-    shape.lock=true;
+    shape.lock = true;
     const startPosition = { x: toTrueX(screenX), y: toTrueY(screenY) };
     const oldCenter = { x: shape.center.x, y: shape.center.y };
     broadcastSelection(shape);
@@ -212,7 +233,7 @@ const downCallbackForSelect = (e) => {
     };
 
     const upCallback = () => {
-      shape.lock=false;
+      shape.lock = false;
       broadcastMove(shape);
       mycanvas.removeEventListener("pointermove", moveCallback);
       mycanvas.removeEventListener("pointerup", upCallback);
@@ -282,7 +303,7 @@ function changeTool(e) {
     case "rect":
       mycanvas.addEventListener("pointerdown", downCallbackForRect);
       break;
-    case 'line':
+    case "line":
     case "path":
       mycanvas.addEventListener("pointerdown", downCallbackForPath);
       break;
@@ -362,8 +383,9 @@ function onMouseWheel(event) {
 const DrawingRoom = document.getElementById("create-drawing-room");
 const joinForm = document.getElementById("join-form");
 const selectTool = document.getElementById("selectTool");
-
+const leaveButton = document.getElementById("leave-room");
 DrawingRoom.addEventListener("click", createDrawingRoom);
+leaveButton.addEventListener("click", leaveDrawingRoom);
 joinForm.addEventListener("submit", joinDrawingRoom);
 selectTool.addEventListener("change", changeTool);
 mycanvas.addEventListener("pointerdown", downCallbackForPath);
