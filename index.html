@@ -29,7 +29,13 @@
     </div>
 
    
-    <div id="loading" class="hidden">Loading...</div>
+    <div id="loading" class="hidden">
+      <div class="loader">
+        <div class="box1"></div>
+        <div class="box2"></div>
+        <div class="box3"></div>
+      </div>
+    </div>
 
  
     
@@ -44,44 +50,47 @@
       
 
      
-      <div id="toolBox">
-        <h3>Tools</h3>
-        <label for="selectTool">Select Tool:</label>
-        <select id="selectTool">
-          <option value="path" selected>Path</option>
-          <option value="rect">Rectangle</option>
-          <option value="select">Select</option>
-          <option value="circle">Circle</option>
-          <option value="grab">Grab</option>
-          <option value="line">Line</option>
-        </select>
+      <div id="toolBox" class="tool-box">
+        <!-- Select Tool -->
+        <div class="tool-container">
+          <select id="selectTool" class="tool-select">
+            <option value="path" selected>🖌️ Path</option>
+            <option value="rect">🟦 Rectangle </option>
+            <option value="select">🖱️ Select</option>
+            <option value="circle">⚪ Circle</option>
+            <option value="grab">✋ Grab</option>
+            <option value="line">📏 Line</option>
+          </select>
+        </div>
+      
         <br />
-
-        <label for="fillColor">Fill Color:</label>
-        <input
-          type="color"
-          id="fillColor"
-          name="fillColor"
-          value="#ff0000"
-          title="Fill Color"
-        />
-        <input type="checkbox" id="fill"  title="Fill Enabled" />
+      
+        <!-- Fill Color -->
+        <div class="tool-option">
+          <label for="fillColor" class="tool-label">Fill Color:</label>
+          <input type="color" id="fillColor" name="fillColor" value="#ff0000" title="Fill Color" />
+          <input type="checkbox" id="fill" title="Fill Enabled" class="tool-checkbox" />
+        </div>
+      
         <br />
-
-        <label for="strokeColor">Stroke Color:</label>
-        <input
-          type="color"
-          id="strokeColor"
-          name="strokeColor"
-          value="#422342"
-          title="Stroke Color"
-        />
-        <input type="checkbox" id="stroke" checked title="Stroke Enabled" />
+      
+        <!-- Stroke Color -->
+        <div class="tool-option">
+          <label for="strokeColor" class="tool-label">Stroke Color:</label>
+          <input type="color" id="strokeColor" name="strokeColor" value="#422342" title="Stroke Color" />
+          <input type="checkbox" id="stroke" checked title="Stroke Enabled" class="tool-checkbox" />
+        </div>
+      
         <br />
-
-        <label for="strokeWidth">Stroke Width:</label>
-        <input type="range" id="strokeWidth" value="5" min="1" max="100" />
+      
+        <!-- Stroke Width -->
+        <div class="tool-option">
+          <label for="strokeWidth" class="tool-label">Stroke Width:</label>
+          <input type="range" id="strokeWidth" value="5" min="1" max="100" class="tool-range" />
+        </div>
       </div>
+      
+      
       <div id="info-container">
           <div>Topic: <span id="chat-room-topic"></span></div>
           <div>Peers: <span id="peers-count">0</span></div>
