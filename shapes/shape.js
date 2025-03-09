@@ -67,6 +67,7 @@ export class Shape {
     throw new Error("no draw method");
   }
   applyHelperRegionStyles(ctx) {
+    ctx.save();
     const red = (this.colorId & 0xff0000) >> 16;
     const green = (this.colorId & 0x00ff00) >> 8;
     const blue = this.colorId & 0x0000ff;
@@ -81,6 +82,7 @@ export class Shape {
     if (this.options.fill) {
       ctx.fill();
     }
+    ctx.restore();
 
   }
   getPoints() {

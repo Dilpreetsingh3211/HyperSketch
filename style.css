@@ -17,6 +17,7 @@
   
   body {
     margin: 0;
+    padding:0;
     overflow: hidden;
     box-sizing: border-box;
     font-family: var(--font-family);
@@ -169,12 +170,35 @@
     }
     
     /* Canvas */
-    canvas {
-        width: 100%;
-        height: 100%;
-        background-color: var(--background-white);
-        display: block;
-    }
+    #canvas-container {
+        position: relative;          /* Establishes a positioning context */
+        width: 100vw;               /* Fixed width, adjust as needed */
+        height: 100vh;              /* Fixed height, adjust as needed */
+        background: #f0f0f0;        /* Optional: Visible background for debugging */
+      }
+      
+      /* Main canvas (behind) */
+      #mainCanvas {
+        position: absolute;         /* Positioned within the container */
+        top: 0;                     /* Align to top-left */
+        left: 0;
+        width: 100%;               /* Match container width */
+        height: 100%;              /* Match container height */
+        z-index: 1;                /* Lower stacking order */
+      }
+      
+      /* Helper canvas (in front, semi-transparent) */
+      #helperCanvas {
+        position: absolute;         /* Positioned within the container */
+        top: 0;                     /* Align to top-left */
+        left: 0;
+        width: 100%;               /* Match container width */
+        height: 100%;              /* Match container height */
+        z-index: 2;                /* Higher stacking order */
+        opacity: 0.5;   
+           /* Semi-transparent to see main canvas underneath */
+        pointer-events: none;      /* Allows mouse events to pass through to mycanvas */
+      }
     
     /* Visibility Utility Classes */
     .hidden {

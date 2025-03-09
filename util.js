@@ -1,3 +1,5 @@
+import { state } from "./state";
+import { mycanvas } from "./state";
 export function averagePoints(points) {
   const sum = points.reduce((acc, p) => addPoints(acc, p), { x: 0, y: 0 });
   return { x: sum.x / points.length, y: sum.y / points.length };
@@ -17,4 +19,24 @@ export function subtractPoints(p1, p2) {
 }
 export function equalPoints(p1, p2) {
   return p1.x === p2.x && p1.y === p2.y;
+}
+
+export function toScreenX(xTrue) {
+  return (xTrue + state.offsetX) * state.scale;
+}
+export function toScreenY(yTrue) {
+  return (yTrue + state.offsetY) * state.scale;
+}
+export function toTrueX(screenX) {
+  return (screenX - state.offsetX) / state.scale;
+}
+
+export function toTrueY(screenY) {
+  return (screenY - state.offsetY) / state.scale;
+}
+export function trueHeight() {
+  return mycanvas.clientHeight / state.scale;
+}
+export function trueWidth() {
+  return mycanvas.clientWidth / state.scale;
 }

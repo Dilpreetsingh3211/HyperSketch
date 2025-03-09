@@ -1,85 +1,31 @@
 /** @typedef {import('pear-interface')} */ /* global Pear */
+import { mycanvas, helperCanvas, ctx, helperCtx, shapes } from "./state";
+import { redrawCanvas } from "./draw";
+import "./tool.js";
+import { getOptions } from "./tool.js";
+import { toTrueX, toTrueY } from "./util";
 import { Rect } from "./shapes/rect";
 import { Path } from "./shapes/path";
 import { Circle } from "./shapes/Circle";
-import {
-  averagePoints,
-  getMidPoint,
-  addPoints,
-  subtractPoints,
-  equalPoints,
-} from "./util";
+import { state } from "./state";
+import { addPoints, subtractPoints } from "./util";
 import Hyperswarm from "hyperswarm";
 import crypto from "hypercore-crypto";
 import b4a from "b4a";
 const { teardown, updates } = Pear;
 
-const mycanvas = document.getElementById("myCanvas");
-const helperCanvas = document.getElementById("helperCanvas");
-
-const SHOW_HELPER_REGIONS = true;
-if (!SHOW_HELPER_REGIONS) {
-  helperCanvas.style.display = "none";
-}
-
-let shapes = [];
 let currentShape;
 let conns = [];
 let myName;
 
-const canvasProperties = {
-  width: SHOW_HELPER_REGIONS ? window.innerWidth / 2 : window.innerWidth,
-  height: window.innerHeight / 2,
-  center: {
-    x: SHOW_HELPER_REGIONS ? window.innerWidth / 4 : window.innerWidth,
-    y: window.innerHeight / 2,
-  },
-};
-
-console.log(canvasProperties.width, canvasProperties.height);
-mycanvas.width = canvasProperties.width;
-mycanvas.height = canvasProperties.height;
-helperCanvas.width = canvasProperties.width;
-helperCanvas.height = canvasProperties.height;
-
-const ctx = mycanvas.getContext("2d");
-const helperCtx = helperCanvas.getContext("2d");
-
-clearCanvas();
+mycanvas.width = state.canvasProperties.width;
+mycanvas.height = state.canvasProperties.height;
+helperCanvas.width = state.canvasProperties.width;
+helperCanvas.height = state.canvasProperties.height;
 
 const swarm = new Hyperswarm();
 teardown(() => swarm.destroy());
 updates(() => Pear.reload());
-
-function createShapeFromData(data) {
-  if (!data || !data.type) return null;
-  switch (data.type) {
-    case "Path":
-      return Path.fromJSON(data);
-    case "Rect":
-      return Rect.fromJSON(data);
-    case "circle":
-      return Circle.fromJSON(data);
-    default:
-      return null;
-  }
-}
-
-function updateShape(index, newShape, type) {
-  if (!shapes[index]) return;
-
-  if (type === "move-shape") {
-    shapes[index].selected = newShape.selected;
-    shapes[index].center = newShape.center;
-  } else {
-    shapes[index] = newShape;
-  }
-}
-
-function redrawCanvas() {
-  clearCanvas();
-  drawShapes(shapes);
-}
 
 swarm.on("connection", (peer) => {
   console.log(peer);
@@ -116,12 +62,11 @@ swarm.on("connection", (peer) => {
         (shape) => shape.id === parsed.data.id
       );
       if (existingShapeIndex !== -1) {
-        shapes.forEach((s) => (s.selected = false)); 
+        shapes.forEach((s) => (s.selected = false));
         shapes[existingShapeIndex].selected = true;
         redrawCanvas();
       }
-    }
-    else if (parsed.type === "delete-shape") {
+    } else if (parsed.type === "delete-shape") {
       shapes = shapes.filter((s) => s.id !== parsed.data.id);
       redrawCanvas();
     }
@@ -160,55 +105,43 @@ async function joinSwarm(topicBuffer) {
   document.querySelector("#board-container").classList.remove("hidden");
   document.querySelector("#board-container").classList.add("visible");
 }
-function updateCanvasSize() {
-  const canvas = document.querySelector("#myCanvas");
-  if (!canvas) return;
 
-  const scaleX = window.innerWidth / canvasProperties.width;
-  const scaleY = window.innerHeight / canvasProperties.height;
-
-  canvasProperties.width = window.innerWidth;
-  canvasProperties.height = window.innerHeight;
-  canvasProperties.center.x = window.innerWidth / 2;
-  canvasProperties.center.y = window.innerHeight / 2;
-
-  mycanvas.width = canvasProperties.width;
-  mycanvas.height = canvasProperties.height;
-  helperCanvas.width = canvasProperties.width;
-  helperCanvas.height = canvasProperties.height;
-
-  shapes.forEach((shape) => {
-    const points = shape.getPoints();
-    if (points) {
-      points = points.map((point) => ({
-        x: point.x * scaleX,
-        y: point.y * scaleY,
-      }));
-    }
-    this.setPoints(points);
-  });
-
-  clearCanvas();
-  drawShapes(shapes);
+function createShapeFromData(data) {
+  if (!data || !data.type) return null;
+  switch (data.type) {
+    case "Path":
+      return Path.fromJSON(data);
+    case "Rect":
+      return Rect.fromJSON(data);
+    case "circle":
+      return Circle.fromJSON(data);
+    default:
+      return null;
+  }
 }
+
+function updateShape(index, newShape, type) {
+  if (!shapes[index]) return;
+
+  if (type === "move-shape") {
+    shapes[index].selected = newShape.selected;
+    shapes[index].center = newShape.center;
+  } else {
+    shapes[index] = newShape;
+  }
+}
+
 const downCallbackForRect = (e) => {
-  const mousePosition = {
-    x: e.offsetX,
-    y: e.offsetY,
-  };
+  const mousePosition = { x: toTrueX(e.offsetX), y: toTrueY(e.offsetY) };
   console.log("inds");
   currentShape = new Rect(mousePosition, getOptions());
   broadcastDrawing(currentShape);
 
   const moveCallback = (e) => {
-    const mousePosition = {
-      x: e.offsetX,
-      y: e.offsetY,
-    };
+    const mousePosition = { x: toTrueX(e.offsetX), y: toTrueY(e.offsetY) };
     currentShape.setCorner2(mousePosition);
     broadcastDrawing(currentShape);
-    clearCanvas();
-    drawShapes([...shapes, currentShape]);
+    redrawCanvas(currentShape);
   };
 
   const upCallback = (e) => {
@@ -222,23 +155,16 @@ const downCallbackForRect = (e) => {
   mycanvas.addEventListener("pointerup", upCallback);
 };
 const downCallbackForPath = (e) => {
-  const mousePosition = {
-    x: e.offsetX,
-    y: e.offsetY,
-  };
+  const mousePosition = { x: toTrueX(e.offsetX), y: toTrueY(e.offsetY) };
 
   currentShape = new Path(mousePosition, getOptions());
   broadcastDrawing(currentShape);
 
   const moveCallback = (e) => {
-    const mousePosition = {
-      x: e.offsetX,
-      y: e.offsetY,
-    };
+    const mousePosition = { x: toTrueX(e.offsetX), y: toTrueY(e.offsetY) };
     currentShape.addPoint(mousePosition);
     broadcastDrawing(currentShape);
-    clearCanvas();
-    drawShapes([...shapes, currentShape]);
+    redrawCanvas(currentShape);
   };
 
   const upCallback = (e) => {
@@ -253,58 +179,55 @@ const downCallbackForPath = (e) => {
 };
 
 const downCallbackForSelect = (e) => {
-  const startPosition = {
-    x: e.offsetX,
-    y: e.offsetY,
-  };
-  const [r, g, b, a] = helperCtx.getImageData(
-    startPosition.x,
-    startPosition.y,
-    1,
-    1
-  ).data;
+  const screenX = e.offsetX;
+  const screenY = e.offsetY;
 
+  redrawCanvas();
+
+  const [r, g, b, a] = helperCtx.getImageData(screenX, screenY, 1, 1).data;
   const colorId = (r << 16) | (g << 8) | b;
-  const shape = shapes.find((s) => colorId == s.colorId);
+  const shape = shapes.find((s) => colorId === s.colorId);
+
   shapes.forEach((s) => (s.selected = false));
-  drawShapes(shapes);
+
   if (shape) {
     shape.selected = true;
-    const oldCenter = shape.center;
-    drawShapes(shapes);
+    const startPosition = { x: toTrueX(screenX), y: toTrueY(screenY) };
+    const oldCenter = { x: shape.center.x, y: shape.center.y };
     broadcastSelection(shape);
-    const moveCallback = function (e) {
-      const mousePosition = {
-        x: e.offsetX,
-        y: e.offsetY,
-      };
-      const newPoint = subtractPoints(mousePosition, startPosition);
-      shape.setCenter(addPoints(oldCenter, newPoint));
-      broadcastMove(shape);
+    redrawCanvas();
 
-      drawShapes(shapes);
+    const moveCallback = (e) => {
+      const mousePosition = { x: toTrueX(e.offsetX), y: toTrueY(e.offsetY) };
+      const delta = subtractPoints(mousePosition, startPosition);
+      shape.setCenter(addPoints(oldCenter, delta));
+      broadcastMove(shape);
+      redrawCanvas();
     };
 
-    const upCallback = (e) => {
+    const upCallback = () => {
       mycanvas.removeEventListener("pointermove", moveCallback);
       mycanvas.removeEventListener("pointerup", upCallback);
     };
+
     mycanvas.addEventListener("pointermove", moveCallback);
     mycanvas.addEventListener("pointerup", upCallback);
+  } else {
+    redrawCanvas();
   }
 };
 
 const downCallbackForCircle = (e) => {
-  const mousePosition = { x: e.offsetX, y: e.offsetY };
-  currentShape = new Circle(mousePosition,0, getOptions());
+  const mousePosition = { x: toTrueX(e.offsetX), y: toTrueY(e.offsetY) };
+  currentShape = new Circle(mousePosition, 0, getOptions());
   broadcastDrawing(currentShape);
   console.log(shapes);
   const moveCallback = (e) => {
-    currentShape.setRadius({ x: e.offsetX, y: e.offsetY });
+    const newPoint = { x: toTrueX(e.offsetX), y: toTrueY(e.offsetY) };
+    currentShape.setRadius(newPoint);
     console.log(shapes);
     broadcastDrawing(currentShape);
-    clearCanvas();
-    drawShapes([...shapes, currentShape]);
+    redrawCanvas(currentShape);
   };
 
   const upCallback = () => {
@@ -320,11 +243,33 @@ const downCallbackForCircle = (e) => {
   mycanvas.addEventListener("pointerup", upCallback);
 };
 
+const downCallbackForGrab = (e) => {
+  const startPosition = { x: e.offsetX, y: e.offsetY };
+  const prevOffsetX = state.offsetX;
+  const prevOffsetY = state.offsetY;
+
+  const moveCallback = (e) => {
+    const mousePosition = { x: e.offsetX, y: e.offsetY };
+    state.offsetX = prevOffsetX + (mousePosition.x - startPosition.x);
+    state.offsetY = prevOffsetY + (mousePosition.y - startPosition.y);
+    redrawCanvas();
+  };
+
+  const upCallback = () => {
+    mycanvas.removeEventListener("pointermove", moveCallback);
+    mycanvas.removeEventListener("pointerup", upCallback);
+  };
+
+  mycanvas.addEventListener("pointermove", moveCallback);
+  mycanvas.addEventListener("pointerup", upCallback);
+};
+
 function changeTool(e) {
   mycanvas.removeEventListener("pointerdown", downCallbackForRect);
   mycanvas.removeEventListener("pointerdown", downCallbackForPath);
   mycanvas.removeEventListener("pointerdown", downCallbackForSelect);
   mycanvas.removeEventListener("pointerdown", downCallbackForCircle);
+  mycanvas.removeEventListener("pointerdown", downCallbackForGrab);
   switch (e.target.value) {
     case "rect":
       mycanvas.addEventListener("pointerdown", downCallbackForRect);
@@ -338,39 +283,17 @@ function changeTool(e) {
     case "circle":
       mycanvas.addEventListener("pointerdown", downCallbackForCircle);
       break;
+    case "grab":
+      mycanvas.addEventListener("pointerdown", downCallbackForGrab);
+      break;
   }
 }
-function drawShapes(shapes) {
-  clearCanvas();
-  for (const shape of shapes) {
-    shape.draw(ctx);
-  }
-  helperCtx.clearRect(0, 0, helperCanvas.width, helperCanvas.height);
-  for (const shape of shapes) {
-    shape.draw(helperCtx, true);
-  }
-}
-function clearCanvas() {
-  ctx.clearRect(0, 0, mycanvas.width, mycanvas.height);
-  ctx.fillStyle = "white";
-  ctx.fillRect(0, 0, mycanvas.width, mycanvas.height);
-}
-function getOptions() {
-  return {
-    fillColor: document.getElementById("fillColor").value,
-    strokeColor: document.getElementById("strokeColor").value,
-    fill: document.getElementById("fill").checked,
-    stroke: document.getElementById("stroke").checked,
-    strokeWidth: document.getElementById("strokeWidth").value,
-    lineCap: "round",
-    lineJoin: "round",
-  };
-}
+
 function broadcast(type, data, excludePeer = null) {
   const message = JSON.stringify({ type, data });
 
   for (const peer of swarm.connections) {
-    if (excludePeer && peer === excludePeer) continue; 
+    if (excludePeer && peer === excludePeer) continue;
     peer.write(message);
   }
 }
@@ -391,36 +314,6 @@ function broadcastMove(shape, excludePeer = null) {
 function broadcastDrawing(drawing, excludePeer = null) {
   broadcast("drawing", drawing, excludePeer);
 }
-function changeFillColor(value) {
-  shapes
-    .filter((s) => s.selected)
-    .forEach((s) => (s.options.fillColor = value));
-  drawShapes(shapes);
-}
-
-function changeFill(value) {
-  shapes.filter((s) => s.selected).forEach((s) => (s.options.fill = value));
-  drawShapes(shapes);
-}
-
-function changeStrokeColor(value) {
-  shapes
-    .filter((s) => s.selected)
-    .forEach((s) => (s.options.strokeColor = value));
-  drawShapes(shapes);
-}
-
-function changeStroke(value) {
-  shapes.filter((s) => s.selected).forEach((s) => (s.options.stroke = value));
-  drawShapes(shapes);
-}
-
-function changeStrokeWidth(value) {
-  shapes
-    .filter((s) => s.selected)
-    .forEach((s) => (s.options.strokeWidth = Number(value)));
-  drawShapes(shapes);
-}
 
 window.addEventListener("keydown", (e) => {
   if (e.key === "Delete") {
@@ -429,38 +322,39 @@ window.addEventListener("keydown", (e) => {
       const deletedShape = shapes[selectedIndex];
 
       shapes.splice(selectedIndex, 1);
-      drawShapes(shapes);
+      redrawCanvas();
 
       broadcast("delete-shape", { id: deletedShape.id });
     }
   }
 });
 
-const fillColorInput = document.getElementById("fillColor");
-const fillCheckbox = document.getElementById("fill");
-const strokeColorInput = document.getElementById("strokeColor");
-const strokeCheckbox = document.getElementById("stroke");
-const strokeWidthInput = document.getElementById("strokeWidth");
+window.addEventListener("resize", (event) => {
+  redrawCanvas();
+});
 
-fillColorInput.addEventListener("input", (e) =>
-  changeFillColor(e.target.value)
-);
-fillCheckbox.addEventListener("change", (e) => changeFill(e.target.checked));
+function onMouseWheel(event) {
+  event.preventDefault();
+  const zoomFactor = event.deltaY > 0 ? 0.9 : 1.1;
+  const oldScale = state.scale;
+  state.scale *= zoomFactor;
 
-strokeColorInput.addEventListener("input", (e) =>
-  changeStrokeColor(e.target.value)
-);
-strokeCheckbox.addEventListener("change", (e) =>
-  changeStroke(e.target.checked)
-);
+  const rect = mycanvas.getBoundingClientRect();
+  const mouseX = event.clientX - rect.left;
+  const mouseY = event.clientY - rect.top;
 
-strokeWidthInput.addEventListener("input", (e) =>
-  changeStrokeWidth(e.target.value)
-);
+  state.offsetX = mouseX - (mouseX - state.offsetX) * (state.scale / oldScale);
+  state.offsetY = mouseY - (mouseY - state.offsetY) * (state.scale / oldScale);
 
-document.querySelector("#create-drawing-room").addEventListener("click", createDrawingRoom);
-document.querySelector("#join-form").addEventListener("submit", joinDrawingRoom);
+  redrawCanvas();
+}
+
+const DrawingRoom = document.getElementById("create-drawing-room");
+const joinForm = document.getElementById("join-form");
+const selectTool = document.getElementById("selectTool");
+
+DrawingRoom.addEventListener("click", createDrawingRoom);
+joinForm.addEventListener("submit", joinDrawingRoom);
+selectTool.addEventListener("change", changeTool);
 mycanvas.addEventListener("pointerdown", downCallbackForPath);
-document.getElementById("selectTool").addEventListener("change", changeTool);
-window.addEventListener("resize", updateCanvasSize);
-updateCanvasSize();
+mycanvas.addEventListener("wheel", onMouseWheel, { passive: false });
