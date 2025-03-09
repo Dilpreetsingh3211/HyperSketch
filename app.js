@@ -68,6 +68,7 @@ swarm.on("connection", (peer) => {
         redrawCanvas();
       }
     } else if (parsed.type === "delete-shape") {
+      console.log("delete received");
       shapes = shapes.filter((s) => s.id !== parsed.data.id);
       redrawCanvas();
     }
@@ -190,12 +191,13 @@ const downCallbackForSelect = (e) => {
 
   const [r, g, b, a] = helperCtx.getImageData(screenX, screenY, 1, 1).data;
   const colorId = (r << 16) | (g << 8) | b;
-  const shape = shapes.find((s) => colorId === s.colorId);
+  const shape = shapes.find((s) => colorId === s.colorId && s.lock===false);
 
   shapes.forEach((s) => (s.selected = false));
 
   if (shape) {
     shape.selected = true;
+    shape.lock=true;
     const startPosition = { x: toTrueX(screenX), y: toTrueY(screenY) };
     const oldCenter = { x: shape.center.x, y: shape.center.y };
     broadcastSelection(shape);
@@ -210,6 +212,8 @@ const downCallbackForSelect = (e) => {
     };
 
     const upCallback = () => {
+      shape.lock=false;
+      broadcastMove(shape);
       mycanvas.removeEventListener("pointermove", moveCallback);
       mycanvas.removeEventListener("pointerup", upCallback);
     };
@@ -284,6 +288,7 @@ function changeTool(e) {
       break;
     case "select":
       mycanvas.addEventListener("pointerdown", downCallbackForSelect);
+      shapes.forEach((s) => (s.selected = false));
       break;
     case "circle":
       mycanvas.addEventListener("pointerdown", downCallbackForCircle);
