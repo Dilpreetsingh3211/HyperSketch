@@ -7,6 +7,7 @@ import { toTrueX, toTrueY } from "./util";
 import { Rect } from "./shapes/rect";
 import { Path } from "./shapes/path";
 import { Circle } from "./shapes/Circle";
+import {Line} from "./shapes/line"
 import { state } from "./state";
 import { addPoints, subtractPoints } from "./util";
 import Hyperswarm from "hyperswarm";
@@ -157,7 +158,10 @@ const downCallbackForRect = (e) => {
 const downCallbackForPath = (e) => {
   const mousePosition = { x: toTrueX(e.offsetX), y: toTrueY(e.offsetY) };
 
-  currentShape = new Path(mousePosition, getOptions());
+  currentShape = (selectTool.value==="path") ? 
+                      new Path(mousePosition, getOptions()) :
+                      new Line(mousePosition,getOptions()) ;
+
   broadcastDrawing(currentShape);
 
   const moveCallback = (e) => {
@@ -274,6 +278,7 @@ function changeTool(e) {
     case "rect":
       mycanvas.addEventListener("pointerdown", downCallbackForRect);
       break;
+    case 'line':
     case "path":
       mycanvas.addEventListener("pointerdown", downCallbackForPath);
       break;
