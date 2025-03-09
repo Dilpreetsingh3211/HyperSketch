@@ -54,7 +54,7 @@ export class Path extends Shape{
         path.colorId=json.colorId;
         path.center=json.center;
         path.selected=json.selected;
-    
+        path.lock=json.lock;
         return path;
       }
     

@@ -57,6 +57,7 @@ export class Rect extends Shape {
         rect.colorId=json.colorId;
         rect.center=json.center;
         rect.selected=json.selected;
+        rect.lock=json.lock;
         return rect;
       }
 }

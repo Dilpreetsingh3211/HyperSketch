@@ -13,6 +13,7 @@ export class Shape {
     this.colorId =Math.floor(16777216 * Math.random());
     this.center = {x:0,y:0};
     this.selected = false;
+    this.lock=false;
   }
   
   setCenter(center) {

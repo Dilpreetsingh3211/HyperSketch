@@ -74,6 +74,7 @@ export class Circle extends Shape {
         const circle = new Circle(json.center, json.radius, options, json.id);
         circle.colorId = json.colorId;
         circle.selected = json.selected;
+        circle.lock=json.lock;
         return circle;
     }
 }
