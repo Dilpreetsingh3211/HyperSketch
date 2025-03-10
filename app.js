@@ -16,6 +16,7 @@ import b4a from "b4a";
 const { teardown, updates } = Pear;
 
 let currentShape;
+let selectedTool = "path";
 
 mycanvas.width = state.canvasProperties.width;
 mycanvas.height = state.canvasProperties.height;
@@ -180,7 +181,7 @@ const downCallbackForPath = (e) => {
   const mousePosition = { x: toTrueX(e.offsetX), y: toTrueY(e.offsetY) };
 
   currentShape =
-    selectTool.value === "path"
+    selectedTool === "path"
       ? new Path(mousePosition, getOptions())
       : new Line(mousePosition, getOptions());
 
@@ -293,13 +294,13 @@ const downCallbackForGrab = (e) => {
   mycanvas.addEventListener("pointerup", upCallback);
 };
 
-function changeTool(e) {
+export function changeTool(tool) {
   mycanvas.removeEventListener("pointerdown", downCallbackForRect);
   mycanvas.removeEventListener("pointerdown", downCallbackForPath);
   mycanvas.removeEventListener("pointerdown", downCallbackForSelect);
   mycanvas.removeEventListener("pointerdown", downCallbackForCircle);
   mycanvas.removeEventListener("pointerdown", downCallbackForGrab);
-  switch (e.target.value) {
+  switch (tool) {
     case "rect":
       mycanvas.addEventListener("pointerdown", downCallbackForRect);
       break;
@@ -358,10 +359,56 @@ window.addEventListener("keydown", (e) => {
       broadcast("delete-shape", { id: deletedShape.id });
     }
   }
+  function updateTooMenu(tool) {
+    let currentlySelected = document.querySelector(
+      `[data-tool="${selectedTool}"]`
+    );
+    currentlySelected.classList.remove('active');
+    console.log(currentlySelected.classList);
+    let newTool = document.querySelector(`[data-tool="${tool}"]`);
+    newTool.classList.add('active');
+    console.log(newTool);
+    selectedTool = tool;
+    changeTool(tool);
+  }
+  switch (e.key) {
+      case "1":
+        updateTooMenu("path");
+        break;
+      case "2":
+        updateTooMenu("rect");
+        break;
+      case "3":
+        updateTooMenu("circle");
+        break;
+      case "4":
+        updateTooMenu("line");
+        break;
+      case "5":
+        updateTooMenu("select");
+        break;
+      case "6":
+        updateTooMenu("grab");
+        break;
+    }
 });
 
 window.addEventListener("resize", (event) => {
   redrawCanvas();
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  const buttons = document.querySelectorAll(".tool-btn");
+  buttons.forEach((button) => {
+    button.addEventListener("click", () => {
+      buttons.forEach((btn) => btn.classList.remove("active"));
+      button.classList.add("active");
+      selectedTool = button.getAttribute("data-tool");
+      changeTool(selectedTool);
+
+      console.log("Selected tool:", selectedTool);
+    });
+  });
 });
 
 function onMouseWheel(event) {
@@ -387,6 +434,5 @@ const leaveButton = document.getElementById("leave-room");
 DrawingRoom.addEventListener("click", createDrawingRoom);
 leaveButton.addEventListener("click", leaveDrawingRoom);
 joinForm.addEventListener("submit", joinDrawingRoom);
-selectTool.addEventListener("change", changeTool);
 mycanvas.addEventListener("pointerdown", downCallbackForPath);
 mycanvas.addEventListener("wheel", onMouseWheel, { passive: false });

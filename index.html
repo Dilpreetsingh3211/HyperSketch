@@ -53,14 +53,14 @@
       <div id="toolBox" class="tool-box">
         <!-- Select Tool -->
         <div class="tool-container">
-          <select id="selectTool" class="tool-select">
-            <option value="path" selected>🖌️ Path</option>
-            <option value="rect">🟦 Rectangle </option>
-            <option value="select">🖱️ Select</option>
-            <option value="circle">⚪ Circle</option>
-            <option value="grab">✋ Grab</option>
-            <option value="line">📏 Line</option>
-          </select>
+          <div class="tool-menu">
+            <button class="tool-btn active" data-tool="path">🖌️ Pen <sub>1</sub></button>
+            <button class="tool-btn" data-tool="rect">🟦 Rectangle <sub>2</sub></button>
+            <button class="tool-btn" data-tool="circle">⚪ Circle <sub>3</sub></button>
+            <button class="tool-btn" data-tool="line">📏 Line <sub>4</sub></button>
+            <button class="tool-btn" data-tool="select">🖱️ Select <sub>5</sub></button>
+            <button class="tool-btn" data-tool="grab">✋ Grab <sub>6</sub></button>
+          </div>
         </div>
       
         <br />
@@ -103,5 +103,6 @@
     <script type="module" src="./shapes/path.js"></script>
     <script type="module" src="./shapes/rect.js"></script>
     <script type="module" src="./app.js"></script>
+    
   </body>
 </html>

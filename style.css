@@ -1,34 +1,22 @@
 /* General Styles */
 :root {
-  --primary-color: #4a90e2;
-  /* Primary color for the theme */
-  --primary-color: #4a90e2;
-  /* Primary color */
-  --primary-color-dark: #357abd;
-  /* Darker shade */
-  --secondary-color: #007bff;
-  /* Secondary color for accents */
-  --background-light: #f8f9fa;
-  /* Light background color */
-  --background-white: #ffffff;
-  /* White background */
-  --shadow-light: 0px 2px 4px rgba(0, 0, 0, 0.2);
-  /* Light shadow */
-  --shadow-medium: 0px 4px 8px rgba(0, 0, 0, 0.3);
-  /* Medium shadow */
-  --shadow-dark: 0px 4px 6px rgba(0, 0, 0, 0.2);
-  /* Dark shadow */
-  --text-dark: #333;
-  /* Dark text color */
+  --primary-color: #4f46e5;
+  /* Indigo */
+  --primary-color-dark: #4338ca;
+  --primary-color-rgb: 79, 70, 229;
+  --accent-color: #8b5cf6;
+  /* Purple accent */
   --text-light: #ffffff;
-  /* Light text color */
-  --border-radius: 8px;
-  /* Default border radius */
-  --font-family: 'Arial', sans-serif;
-  /* Default font family */
+  --text-dark: #1f2937;
+  --text-muted: #6b7280;
+  --border-radius: 12px;
+  --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 10px 15px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 20px 25px rgba(0, 0, 0, 0.15);
+  --background-light: #f9fafb;
+  --surface: #ffffff;
+  
 }
-
-
 
 /* Titlebar Styling */
 html,
@@ -45,8 +33,7 @@ body {
   background-color: var(--background-light);
 }
 
-/* Titlebar Styling */
-/* Titlebar Styling */
+
 #titlebar {
   -webkit-app-region: drag;
   display: flex;
@@ -64,7 +51,7 @@ body {
   /* z-index: 20; */
 }
 
-/* Setup Container */
+
 #setup-container {
   display: flex;
   justify-content: center;
@@ -89,24 +76,8 @@ body {
   color: var(--text-dark);
 }
 
-/* Custom Variables */
-:root {
-  --primary-color: #4f46e5;
-  /* Indigo */
-  --primary-color-dark: #4338ca;
-  --primary-color-rgb: 79, 70, 229;
-  --accent-color: #8b5cf6;
-  /* Purple accent */
-  --text-light: #ffffff;
-  --text-dark: #1f2937;
-  --text-muted: #6b7280;
-  --border-radius: 12px;
-  --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 10px 15px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 20px 25px rgba(0, 0, 0, 0.15);
-  --background-light: #f9fafb;
-  --surface: #ffffff;
-}
+
+
 
 
 
@@ -292,30 +263,6 @@ body {
   animation-fill-mode: forwards;
 }
 
-/* Dark mode support (optional) */
-@media (prefers-color-scheme: light) {
-  :root {
-    --text-dark: #f3f4f6;
-    --text-muted: #9ca3af;
-    --background-light: #111827;
-    --surface: #1f2937;
-  }
-
-  #join-drawing-room-topic {
-    background-color: rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 255, 255, 0.1);
-    color: var(--text-light);
-  }
-
-  #or::before,
-  #or::after {
-    background-color: rgba(255, 255, 255, 0.1);
-  }
-}
-
-
-
-
 /* Board Container */
 #board-container {
   display: none;
@@ -366,53 +313,37 @@ body {
   color: var(--secondary-color);
 }
 
-/* Canvas */
+
 #canvas-container {
   position: relative;
-  /* Establishes a positioning context */
   width: 100vw;
-  /* Fixed width, adjust as needed */
   height: 100vh;
-  /* Fixed height, adjust as needed */
   background: #f0f0f0;
-  /* Optional: Visible background for debugging */
 }
 
-/* Main canvas (behind) */
-#mainCanvas {
+
+#myCanvas {
   position: absolute;
-  /* Positioned within the container */
   top: 0;
-  /* Align to top-left */
   left: 0;
   width: 100%;
-  /* Match container width */
   height: 100%;
-  /* Match container height */
   z-index: 1;
-  /* Lower stacking order */
 }
 
-/* Helper canvas (in front, semi-transparent) */
+
 #helperCanvas {
   position: absolute;
-  /* Positioned within the container */
   top: 0;
-  /* Align to top-left */
   left: 0;
   width: 100%;
-  /* Match container width */
   height: 100%;
-  /* Match container height */
   z-index: 2;
-  /* Higher stacking order */
   opacity: 0.5;
-  /* Semi-transparent to see main canvas underneath */
   pointer-events: none;
-  /* Allows mouse events to pass through to mycanvas */
 }
 
-/* Visibility Utility Classes */
+
 .hidden {
   display: none !important;
 }
@@ -425,14 +356,12 @@ body {
 @media (max-width: 768px) {
   #toolBox {
     flex-wrap: wrap;
-    /* Allow toolbar items to wrap on smaller screens */
     justify-content: center;
     padding: 8px 10px;
   }
 
   #info-container {
     font-size: 12px;
-    /* Smaller font size for smaller screens */
     padding: 6px 10px;
     gap: 10px;
   }
@@ -459,20 +388,12 @@ body {
   }
 }
 
-
-/* selectttt toooool */
-
-
-
-/* Light-mode styling */
-
-
 .tool-box {
   background-color: #fff;
   border-radius: 15px;
   padding: 24px;
   box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
-  width:75%;
+  width:90%;
   margin: auto;
   transition: all 0.3s ease;
 }
@@ -482,29 +403,38 @@ body {
   box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.15);
 }
 
+.tool-menu {
+  display: flex;
+  gap: 4px;
+}
+
+.tool-btn {
+  padding: 8px 12px;
+  border: none;
+  border-radius: var(--border-radius);
+  background: var(--background-light);
+  color: var(--text-dark);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tool-btn:hover {
+  background: var(--primary-color);
+  color: var(--text-light);
+}
+
+.tool-btn.active {
+  background: var(--primary-color-dark);
+  color: var(--text-light);
+}
+
+.tool-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--accent-color);
+}
+
 .tool-container {
   margin: 5px;
-}
-
-.tool-select {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  font-size: 16px;
-  background-color: #fefefe;
-  transition: border 0.3s ease;
-  appearance: none;
-  background-position: right 10px center;
-  background-repeat: no-repeat;
-  background-size: 16px;
-  cursor: pointer;
-  margin-left: 15px;
-  margin-right: 15px;
-}
-
-.tool-select:hover {
-  border-color: #007bff;
 }
 
 .tool-label {
@@ -572,7 +502,7 @@ input[type="checkbox"]:checked {
 /* Add smooth animation */
 .tool-box,
 .tool-option,
-.tool-select,
+.tool-btn,
 .tool-range {
   transition: all 0.3s ease;
 }

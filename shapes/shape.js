@@ -37,16 +37,57 @@ export class Shape {
     const minY = Math.min(...points.map((p) => p.y));
     const maxX = Math.max(...points.map((p) => p.x));
     const maxY = Math.max(...points.map((p) => p.y));
+  
+    
+    const gizmoColor = "#00A3FF"; 
+    const centerColor = "black"; 
+    const handleRadius = 4;       
+  
     ctx.save();
+  
+    
+    ctx.shadowColor = "rgba(0, 0, 0, 0.3)";
+    ctx.shadowBlur = 5;
+    ctx.shadowOffsetX = 0;
+    ctx.shadowOffsetY = 0;
+  
+    
     ctx.beginPath();
     ctx.rect(minX + center.x, minY + center.y, maxX - minX, maxY - minY);
-    ctx.strokeStyle = "orange";
-    ctx.lineWidth = 3;
-    ctx.setLineDash([5, 5]);
+    ctx.strokeStyle = gizmoColor;
+    ctx.lineWidth = 3;           
+    ctx.setLineDash([3,3]);      
     ctx.stroke();
+  
+    ctx.shadowColor = "transparent";
+    ctx.shadowBlur = 0;
+
+    const relHandles = [
+      { x: minX, y: minY },              // Top-left
+      { x: maxX, y: minY },              // Top-right
+      { x: minX, y: maxY },              // Bottom-left
+      { x: maxX, y: maxY },              // Bottom-right
+      { x: (minX + maxX) / 2, y: minY }, // Top-middle
+      { x: (minX + maxX) / 2, y: maxY }, // Bottom-middle
+      { x: minX, y: (minY + maxY) / 2 }, // Left-middle
+      { x: maxX, y: (minY + maxY) / 2 }  // Right-middle
+    ];
+  
+    relHandles.forEach((rel) => {
+      const absX = rel.x + center.x;
+      const absY = rel.y + center.y;
+      ctx.beginPath();
+      ctx.arc(absX, absY, handleRadius, 0, 2 * Math.PI);
+      ctx.fillStyle = gizmoColor;
+      ctx.fill();
+    });
+  
+    
     ctx.beginPath();
-    ctx.arc(center.x, center.y, 5, 0, 2 * Math.PI);
-    ctx.stroke();
+    ctx.arc(center.x, center.y, 6, 0, 2 * Math.PI);
+    ctx.fillStyle = centerColor;
+    ctx.fill();
+  
     ctx.restore();
   }
   applyStyles(ctx){
