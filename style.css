@@ -503,6 +503,7 @@ input[type="checkbox"]:checked {
 .tool-box,
 .tool-option,
 .tool-btn,
+#leave-room,
 .tool-range {
   transition: all 0.3s ease;
 }
@@ -512,15 +513,12 @@ input[type="checkbox"]:checked {
   color: var(--text-light);
   border: none;
   border-radius: var(--border-radius);
-  font-size: 1rem; /* Slightly smaller than main buttons */
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
   position: relative;
   overflow: hidden;
   box-shadow: var(--shadow-sm);
   letter-spacing: 0.5px;
-  margin: 0 10px; /* Space it from other elements */
 }
 
 /* Hover effect with shine */

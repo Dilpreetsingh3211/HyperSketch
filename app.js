@@ -66,7 +66,13 @@ swarm.on("connection", (peer) => {
       }
     } else if (parsed.type === "delete-shape") {
       console.log("delete received");
-      shapes = shapes.filter((s) => s.id !== parsed.data.id);
+      const selectedIndex = shapes.findIndex((s) => s.id===parsed.data.id);
+      console.log(selectedIndex)
+      if (selectedIndex !== -1) {
+        const deletedShape = shapes[selectedIndex];
+        shapes.splice(selectedIndex, 1);
+       
+      }
       redrawCanvas();
     }
   });
@@ -246,6 +252,38 @@ const downCallbackForSelect = (e) => {
     redrawCanvas();
   }
 };
+const downCallbackForEraser = (e) => {
+  const screenX = e.offsetX;
+  const screenY = e.offsetY;
+
+  redrawCanvas();
+  function  handleDelete(x,y){
+    const [r, g, b, a] = helperCtx.getImageData(x, y, 1, 1).data;
+    const colorId = (r << 16) | (g << 8) | b;
+    const selectedIndex = shapes.findIndex((s) => colorId === s.colorId && s.lock === false);
+    if(selectedIndex!==-1){
+      const deletedShape = shapes[selectedIndex];
+      shapes.splice(selectedIndex, 1);
+      redrawCanvas();
+      broadcast("delete-shape", { id: deletedShape.id });
+    }
+  }
+  handleDelete(screenX,screenY);
+  
+  const moveCallback = (e) => {
+    const mousePosition = { x: e.offsetX, y: e.offsetY };
+    handleDelete(mousePosition.x,mousePosition.y);
+    redrawCanvas();
+  };
+
+  const upCallback = () => {
+    mycanvas.removeEventListener("pointermove", moveCallback);
+    mycanvas.removeEventListener("pointerup", upCallback);
+  };
+
+  mycanvas.addEventListener("pointermove", moveCallback);
+  mycanvas.addEventListener("pointerup", upCallback);
+};
 
 const downCallbackForCircle = (e) => {
   const mousePosition = { x: toTrueX(e.offsetX), y: toTrueY(e.offsetY) };
@@ -300,23 +338,33 @@ export function changeTool(tool) {
   mycanvas.removeEventListener("pointerdown", downCallbackForSelect);
   mycanvas.removeEventListener("pointerdown", downCallbackForCircle);
   mycanvas.removeEventListener("pointerdown", downCallbackForGrab);
+  mycanvas.removeEventListener("pointerdown", downCallbackForEraser);
   switch (tool) {
     case "rect":
       mycanvas.addEventListener("pointerdown", downCallbackForRect);
+      mycanvas.style.cursor="crosshair";
       break;
     case "line":
     case "path":
       mycanvas.addEventListener("pointerdown", downCallbackForPath);
+      mycanvas.style.cursor="crosshair";
       break;
     case "select":
       mycanvas.addEventListener("pointerdown", downCallbackForSelect);
       shapes.forEach((s) => (s.selected = false));
+      mycanvas.style.cursor="default";
       break;
     case "circle":
       mycanvas.addEventListener("pointerdown", downCallbackForCircle);
+      mycanvas.style.cursor="crosshair";
       break;
     case "grab":
       mycanvas.addEventListener("pointerdown", downCallbackForGrab);
+      mycanvas.style.cursor="grab";
+      break;
+    case "eraser":
+      mycanvas.addEventListener("pointerdown", downCallbackForEraser);
+      mycanvas.style.cursor="crosshair";
       break;
   }
 }
@@ -390,6 +438,8 @@ window.addEventListener("keydown", (e) => {
       case "6":
         updateTooMenu("grab");
         break;
+      case "0":
+        updateTooMenu("eraser");
     }
 });
 
